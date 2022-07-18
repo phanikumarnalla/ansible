@@ -1,2 +1,0 @@
-# ansible
-For Ansible scripts
