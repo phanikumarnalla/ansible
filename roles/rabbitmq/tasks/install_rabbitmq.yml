@@ -1,0 +1,74 @@
+---
+
+- include_vars: vars/defaults.yml
+
+#########################################################################################
+## Install Apache webserver on CentOS machine 
+## Refer the below URL to add more parameters to the below ansible role
+## https://docs.ansible.com/ansible/latest/collections/ansible/builtin/yum_module.html
+#########################################################################################
+
+- name: Import EPEL GPG key
+  rpm_key:
+    key: http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6
+    state: present
+  register : import_epel
+- debug:
+    var: import_epel
+ 
+- name: Add YUM repo
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://dl.fedoraproject.org/pub/epel/$releasever/$basearch/
+    gpgcheck: yes
+  register : add_epel
+- debug:
+    var: add_epel
+
+- name: Update yum software package repository
+  yum:
+    name: ‘*’
+    update_cache: yes
+  register : update_yum
+- debug:
+    var: update_yum
+
+- name: Install RabbitMQ server
+  package:
+    name: “{{ item }}”
+    state: latest
+    with_items:
+      - rabbitmq-server
+  register : install_rabbitmq
+- debug:
+    var: install_rabbitmq
+
+- name: Start the RabbitMQ server
+  service:
+    name: rabbitmq-server
+    state: started
+  register : start_rabbitmq
+- debug:
+    var: start_rabbitmq 
+- wait_for:
+  port: 5672
+
+
+
+- name: Start management UI
+  command: /usr/lib/rabbitmq/bin/rabbitmq-plugins enable rabbitmq_management
+ 
+- name: Restart RabbitMQ server
+  service:
+    name: rabbitmq-server
+    state: restarted
+  register : restart_rabbitmq
+- debug:
+    var: restart_rabbitmq
+- wait_for:
+  port: 15672
+ 
+- name: Allow port 15672
+  shell: iptables -I INPUT 5 -p tcp --dport 15672 -m state --state NEW,ESTABLISHED -j ACCEPT
+

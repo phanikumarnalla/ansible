@@ -1,0 +1,53 @@
+# inventory file for Dev Environment AWS instances
+#
+# This is ansible 'hosts' file for DEV AWS instance's.
+#
+# It should live in ansible/inventories/cloud/aws/dev/
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+#
+#
+#
+#
+# Example :
+# [webservers]
+# 10.10.10.10
+# 20.20.20.20
+#
+#
+# [dbservers]
+# 30.30.30.30
+# 40.40.40.40
+
+#[linux_webserver]
+#10.10.10.10
+
+#[linux_webserver:vars]
+#ansible_connection=ssh
+#ansible_ssh_user="#{linux_username}#"
+#ansible_ssh_private_key_file="#{linux_keypair}#"
+
+[smarthome]
+172.31.5.9
+[iot]
+172.31.4.35
+[db]
+172.31.5.47
+
+[smarthome:vars]
+ansible_ssh_user=ec2-user
+ansible_ssh_private_key_file=/home/ec2-user/.ssh/keypair.pub
+
+[iot:vars]
+ansible_ssh_user=ec2-user
+ansible_ssh_private_key_file=/home/ec2-user/.ssh/keypair.pub
+
+[db:vars]
+ansible_ssh_user=vivek
+ansible_ssh_private_key_file=/home/ec2-user/.ssh/keypair.pub
+
+
