@@ -10,3 +10,9 @@
    ```shell script
     ansible smarthome -i hosts -m ping
    ```
+* To list hosts
+   ```shell script
+    ansible smarthome -i hosts --list-hosts
+   ```
+   
+   
